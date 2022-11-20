@@ -1,0 +1,17 @@
+from arcgis.gis import GIS
+from arcgis.raster.functions import *
+## connect as an anonymous user
+gis = GIS()
+landsat_item = gis.content.search('"Multispectral Landsat"', 'Imagery Layer')[0]
+landsat_item
+landsat = landsat_item.layers[0]
+def extract_stretch(bandids):
+    return stretch(extract_band(landsat, bandids),
+                   stretch_type='PercentClip',
+                   min_percent=2, 
+                   max_percent=2,
+                   dra=True, 
+                   gamma=[0.8,0.8,0.8])
+gulf_of_alaska = extract_stretch([5, 4, 1])
+gulf_of_alaska.extent = {'xmax': -135.058, 'xmin': -149.91, 'ymax': 60.67, 'ymin': 61.26, 'spatialReference': 4326}
+gulf_of_alaska
